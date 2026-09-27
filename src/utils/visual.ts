@@ -26,6 +26,8 @@ export function getVisualColor(visual: Visual): string | null {
     // at every call site is for.
     case 'illustration':
       return null;
+    case 'planet':
+      return null;
     // A group takes its colour from the thing being repeated, so the numeral
     // "3" is written in the same colour as the three dots above it.
     case 'group':

@@ -2,6 +2,7 @@ import type { Lesson, Subject, SubjectId } from '../lesson/types';
 import { animalsSubject } from './animals';
 import { colorsSubject } from './colors';
 import { numbersSubject } from './numbers';
+import { planetsSubject } from './planets';
 
 /**
  * The content registry: every subject and lesson in the app.
@@ -13,6 +14,7 @@ export const subjects: Subject[] = [
   colorsSubject,
   numbersSubject,
   animalsSubject,
+  planetsSubject,
 ];
 
 export function getSubject(id: SubjectId): Subject | undefined {
@@ -71,7 +73,8 @@ export function getNextLesson(lessonId: string): Lesson | undefined {
   return index === -1 ? undefined : siblings[index + 1];
 }
 
-export { animalsSubject, colorsSubject, numbersSubject };
+export { animalsSubject, colorsSubject, numbersSubject, planetsSubject };
 export { animalLessons } from './animals';
 export { colorLessons, redLesson } from './colors';
 export { numberLessons } from './numbers';
+export { planetLessons } from './planets';

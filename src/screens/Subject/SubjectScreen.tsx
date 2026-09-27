@@ -17,6 +17,7 @@ import { cardSurface, radius, spacing, textStyles, ui } from '../../theme';
 
 const idleAnimation = require('../../assets/images/Idle.gif');
 const colorsTitleImage = require('../../assets/images/colors.png');
+const animalsTitleImage = require('../../assets/images/animals.png');
 
 interface SubjectScreenProps {
   subjectId: SubjectId;
@@ -49,6 +50,8 @@ export function SubjectScreen({
   const subject = getSubject(subjectId);
   const lessons = getLessonsForSubject(subjectId);
   const { width } = useWindowDimensions();
+  const usesFrostedScrollHeader =
+    subjectId === 'animals' || subjectId === 'planets';
 
   /*
    * How big the drawing inside each tile should be.
@@ -59,7 +62,10 @@ export function SubjectScreen({
    * margin, and cap it so tiles do not become enormous on a tablet.
    */
   const tileWidth = (width - spacing.lg * 2 - spacing.md) / COLUMNS;
-  const visualSize = Math.min(120, Math.round(tileWidth * 0.62));
+  const visualSize =
+    subjectId === 'animals' || subjectId === 'planets'
+      ? Math.min(220, Math.round(tileWidth))
+      : Math.min(120, Math.round(tileWidth * 0.62));
 
   /*
    * How much vertical room to give every drawing.
@@ -74,7 +80,7 @@ export function SubjectScreen({
   const visualBoxHeight = Math.max(
     0,
     ...lessons.map(lesson => visualHeight(lesson.concept.visual, visualSize)),
-  );
+  ) + (subjectId === 'animals' || subjectId === 'planets' ? spacing.xs * 2 : 0);
 
   return (
     <Screen style={subjectId === 'colors' ? styles.colorsScreen : undefined}>
@@ -84,7 +90,8 @@ export function SubjectScreen({
       <View
         style={[
           styles.header,
-          subjectId !== 'animals' && styles.centeredHeader,
+          styles.centeredHeader,
+          usesFrostedScrollHeader && styles.frostedScrollHeader,
         ]}>
         {subjectId === 'colors' ? (
           <Image
@@ -93,6 +100,18 @@ export function SubjectScreen({
             resizeMode="contain"
             accessible={false}
           />
+        ) : subjectId === 'animals' ? (
+          <Image
+            source={animalsTitleImage}
+            style={styles.animalsTitleImage}
+            resizeMode="contain"
+            accessible={false}
+          />
+        ) : subjectId === 'planets' ? (
+          <View style={styles.planetHeading}>
+            <View style={styles.planetHeadingRule} />
+            <Text style={styles.planetHeadingLabel}>02 — PLANETS</Text>
+          </View>
         ) : (
           <Text style={styles.title}>{subject?.title ?? ''}</Text>
         )}
@@ -100,7 +119,9 @@ export function SubjectScreen({
           onPress={onBack}
           style={[
             styles.backButton,
-            subjectId !== 'animals' && styles.centeredBackButton,
+            styles.centeredBackButton,
+            (subjectId === 'animals' || subjectId === 'planets') &&
+              styles.animalBackButton,
           ]}
           hitSlop={8}
           accessibilityRole="button"
@@ -110,7 +131,11 @@ export function SubjectScreen({
       </View>
 
       <ScrollView
-        contentContainerStyle={styles.grid}
+        style={usesFrostedScrollHeader ? styles.scrollWithFrostedHeader : undefined}
+        contentContainerStyle={[
+          styles.grid,
+          usesFrostedScrollHeader && styles.gridWithFrostedHeader,
+        ]}
         showsVerticalScrollIndicator={false}>
         {lessons.map((lesson, index) => (
           <View key={lesson.id} style={{ width: tileWidth }}>
@@ -126,11 +151,7 @@ export function SubjectScreen({
             />
           </View>
         ))}
-        {(
-          subjectId === 'colors' ||
-          subjectId === 'numbers' ||
-          subjectId === 'animals'
-        ) && (
+        {(subjectId === 'colors' || subjectId === 'numbers') && (
           <View style={styles.idleCard}>
             <Image
               source={idleAnimation}
@@ -160,6 +181,17 @@ const styles = StyleSheet.create({
   centeredHeader: {
     justifyContent: 'center',
   },
+  frostedScrollHeader: {
+    position: 'absolute',
+    top: spacing.sm + 14,
+    left: spacing.lg,
+    right: spacing.lg,
+    zIndex: 2,
+    minHeight: 70 + spacing.md + spacing.lg,
+    paddingHorizontal: spacing.lg,
+    borderRadius: radius.lg,
+    ...cardSurface,
+  },
   title: {
     ...textStyles.title,
     color: ui.ink,
@@ -167,6 +199,26 @@ const styles = StyleSheet.create({
   colorsTitleImage: {
     width: 190,
     height: 84,
+  },
+  animalsTitleImage: {
+    width: 250,
+    height: 70,
+  },
+  planetHeading: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.md,
+  },
+  planetHeadingRule: {
+    width: 80,
+    height: 1,
+    backgroundColor: ui.warmBrown,
+  },
+  planetHeadingLabel: {
+    fontSize: 20,
+    fontWeight: '500',
+    letterSpacing: 5,
+    color: ui.warmBrown,
   },
   backButton: {
     minWidth: 44,
@@ -186,11 +238,21 @@ const styles = StyleSheet.create({
     top: spacing.md,
     right: 0,
   },
+  animalBackButton: {
+    top: spacing.md + 11,
+    right: 44,
+  },
   grid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     gap: spacing.md,
     paddingBottom: spacing.xl,
+  },
+  scrollWithFrostedHeader: {
+    flex: 1,
+  },
+  gridWithFrostedHeader: {
+    paddingTop: 126,
   },
   idleCard: {
     width: '100%',

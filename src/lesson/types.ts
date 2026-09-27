@@ -8,7 +8,20 @@ import type { AudioCueId } from '../audio/cues';
  * lesson using only the types below, that lesson needs no new code.
  */
 
-export type SubjectId = 'colors' | 'numbers' | 'animals';
+export type SubjectId = 'colors' | 'numbers' | 'animals' | 'planets';
+
+export type PlanetName =
+  | 'mercury'
+  | 'venus'
+  | 'earth'
+  | 'moon'
+  | 'mars'
+  | 'jupiter'
+  | 'saturn'
+  | 'uranus'
+  | 'neptune'
+  | 'pluto'
+  | 'sun';
 
 /**
  * The animals there are drawings for.
@@ -19,7 +32,17 @@ export type SubjectId = 'colors' | 'numbers' | 'animals';
  * the app compiling until a rabbit has actually been drawn — which is much
  * better than a lesson that runs fine and shows nothing.
  */
-export type IllustrationName = 'dog' | 'cat' | 'bird';
+export type IllustrationName =
+  | 'dog'
+  | 'bear'
+  | 'bird'
+  | 'elephant'
+  | 'fish'
+  | 'giraffe'
+  | 'lion'
+  | 'monkey'
+  | 'mouse'
+  | 'tiger';
 
 /**
  * How to draw a learning object, described as data rather than as a component.
@@ -43,6 +66,7 @@ export type Visual =
    * only says which animal — never how it is drawn.
    */
   | { kind: 'illustration'; name: IllustrationName }
+  | { kind: 'planet'; name: PlanetName }
   /**
    * A quantity: the same thing drawn `count` times. This is what a number
    * lesson shows — seven dots *are* the concept "seven".
@@ -52,7 +76,7 @@ export type Visual =
    * uncountable scatter, which is how children actually learn to recognise
    * quantities above four without counting one by one.
    */
-  | { kind: 'group'; item: Visual; count: number; perRow?: number };
+  | { kind: 'group'; item: Visual; items?: Visual[]; count: number; perRow?: number };
 
 /** One thing being taught: "red", "three", "rabbit". */
 export interface Concept {
@@ -162,6 +186,8 @@ export type LessonStep =
 export interface Lesson {
   id: string;
   concept: Concept;
+  /** Optional styled name used only in a subject picker. */
+  pickerLabel?: string;
   steps: LessonStep[];
 }
 

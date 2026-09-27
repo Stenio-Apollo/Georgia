@@ -44,6 +44,10 @@ export function LessonTile({
 }: LessonTileProps) {
   const entranceStyle = useGentleEntrance(entranceDelayMs);
   const press = usePressFeel();
+  const isImageLesson =
+    lesson.concept.visual.kind === 'illustration' ||
+    lesson.concept.visual.kind === 'planet';
+  const isPlanet = lesson.concept.visual.kind === 'planet';
 
   // The name in its own colour, as on the introduction step. For a number
   // lesson this is the numeral in the counting brown.
@@ -58,19 +62,34 @@ export function LessonTile({
         hitSlop={8}
         accessibilityRole="button"
         accessibilityLabel={lesson.concept.name}>
-        <Animated.View style={[styles.tile, press.style]}>
+        <Animated.View
+          style={[
+            styles.tile,
+            isImageLesson && styles.animalTile,
+            press.style,
+          ]}>
           {/* The preview never animates or invites a touch — `state` stays at
               its default 'idle'. A grid of pulsing tiles would be exactly the
               kind of busy screen this app avoids. */}
-          <View style={[styles.visual, { height: visualBoxHeight }]}>
+          <View
+            style={[
+              styles.visual,
+              isImageLesson && styles.animalVisual,
+              { height: visualBoxHeight },
+            ]}>
             <LearningObject
               visual={lesson.concept.visual}
               accessibilityLabel={lesson.concept.name}
               size={visualSize}
             />
           </View>
-          <Text style={[styles.name, { color: nameColor }]}>
-            {lesson.concept.name}
+          <Text
+            style={[
+              styles.name,
+              { color: nameColor },
+              isPlanet && styles.planetName,
+            ]}>
+            {lesson.pickerLabel ?? lesson.concept.name}
           </Text>
         </Animated.View>
       </Pressable>
@@ -103,7 +122,31 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  animalTile: {
+    gap: spacing.sm,
+    paddingVertical: 0,
+    backgroundColor: 'transparent',
+    borderWidth: 0,
+    elevation: 0,
+    shadowOpacity: 0,
+  },
+  animalVisual: {
+    alignSelf: 'stretch',
+    overflow: 'hidden',
+    borderRadius: radius.md,
+    padding: spacing.xs,
+    ...cardSurface,
+    borderWidth: 0,
+    borderTopWidth: 0,
+  },
   name: {
     ...textStyles.title,
+  },
+  planetName: {
+    fontSize: 20,
+    fontWeight: '500',
+    letterSpacing: 5,
+    color: ui.warmBrown,
+    textAlign: 'center',
   },
 });

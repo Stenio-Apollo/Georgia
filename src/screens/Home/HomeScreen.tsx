@@ -47,6 +47,8 @@ export function HomeScreen({ onOpenSubject, onOpenParent }: HomeScreenProps) {
   const isTablet = Math.min(width, height) >= 600;
   const tabletCardWidth =
     (width - spacing.lg * 2 - spacing.lg * 2) / 3;
+  const primarySubjects = subjects.filter(subject => subject.id !== 'planets');
+  const planetSubject = subjects.find(subject => subject.id === 'planets');
 
   return (
     <Screen>
@@ -62,7 +64,7 @@ export function HomeScreen({ onOpenSubject, onOpenParent }: HomeScreenProps) {
       </View>
 
       <View style={styles.cards}>
-        {subjects.map((subject, index) => (
+        {primarySubjects.map((subject, index) => (
           <View
             key={subject.id}
             style={[
@@ -116,6 +118,22 @@ export function HomeScreen({ onOpenSubject, onOpenParent }: HomeScreenProps) {
             accessible={false}
           />
         </View>
+        {planetSubject && (
+          <View
+            style={[
+              styles.cardSlot,
+              isTablet && { width: tabletCardWidth },
+            ]}>
+            <SubjectCard
+              title={planetSubject.title}
+              description={planetSubject.description}
+              accentColor={subjectAccent[planetSubject.id]}
+              isAvailable={planetSubject.lessons.length > 0}
+              entranceDelayMs={subjects.length * 90}
+              onPress={() => onOpenSubject(planetSubject.id)}
+            />
+          </View>
+        )}
       </View>
 
       {/*

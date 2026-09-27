@@ -22,11 +22,7 @@ import type {
  * them ("This is a dog." / "Can you touch the dog?"). That is the other thing
  * this subject proved: the wording is data too.
  *
- * WHY THREE, NOT FOUR. Rabbit is deliberately not here yet. A question needs
- * three distinct choices, so three animals is the smallest version of this
- * subject that can exist at all — and stopping at exactly that point leaves the
- * next step a clean demonstration that a fourth animal is now purely additive:
- * one name in `IllustrationName`, one drawing, one line in SPECS.
+ * Each question shows the target alongside two deliberately chosen distractors.
  */
 
 /**
@@ -84,9 +80,16 @@ interface AnimalLessonSpec {
 }
 
 const SPECS: AnimalLessonSpec[] = [
-  { slug: 'dog', choices: ['dog', 'cat', 'bird'] },
-  { slug: 'cat', choices: ['bird', 'cat', 'dog'] },
-  { slug: 'bird', choices: ['cat', 'dog', 'bird'] },
+  { slug: 'dog', choices: ['dog', 'bear', 'bird'] },
+  { slug: 'bird', choices: ['giraffe', 'lion', 'bird'] },
+  { slug: 'elephant', choices: ['elephant', 'monkey', 'mouse'] },
+  { slug: 'fish', choices: ['tiger', 'fish', 'dog'] },
+  { slug: 'giraffe', choices: ['bear', 'giraffe', 'lion'] },
+  { slug: 'lion', choices: ['mouse', 'elephant', 'lion'] },
+  { slug: 'monkey', choices: ['monkey', 'bird', 'fish'] },
+  { slug: 'mouse', choices: ['giraffe', 'mouse', 'tiger'] },
+  { slug: 'tiger', choices: ['dog', 'tiger', 'bear'] },
+  { slug: 'bear', choices: ['fish', 'bear', 'elephant'] },
 ];
 
 /** The same four steps as every other lesson. The engine sees no difference. */
@@ -144,7 +147,6 @@ export const animalLessons: Lesson[] = SPECS.map(animalLesson);
 export const animalsSubject: Subject = {
   id: 'animals',
   title: 'Animals',
-  // Honest about what is actually in here. Rabbit goes in when it is drawn.
-  description: 'Dog, Cat, Bird...',
+  description: 'Dog, Bear, Bird...',
   lessons: animalLessons,
 };

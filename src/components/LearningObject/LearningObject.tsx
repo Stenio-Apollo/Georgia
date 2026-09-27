@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import {
+  Image,
   Pressable,
   StyleSheet,
   Text,
@@ -23,9 +24,17 @@ import {
   usePressFeel,
 } from '../../animation/transitions';
 import type { Visual } from '../../lesson/types';
-import { fontSize, spacing, textStyles, touchTarget, ui } from '../../theme';
+import {
+  fontSize,
+  radius,
+  spacing,
+  textStyles,
+  touchTarget,
+  ui,
+} from '../../theme';
 import { getVisualColor } from '../../utils/visual';
 import { illustrations } from './illustrations';
+import { planets } from './planets';
 
 /**
  * Draws the thing being taught, and animates it.
@@ -122,14 +131,23 @@ function Shape({ visual, size }: ShapeProps) {
         </Svg>
       );
     case 'illustration': {
-      // The lesson says "dog"; this is where that becomes a drawing. Looking
-      // the component up in a registry rather than switching on the name means
-      // a new animal touches `illustrations.tsx` and nothing else.
-      const Illustration = illustrations[visual.name];
+      const image = illustrations[visual.name];
       return (
-        <Svg width={size} height={size} viewBox="0 0 100 100">
-          <Illustration />
-        </Svg>
+        <Image
+          source={image}
+          style={[styles.illustrationImage, { width: size, height: size }]}
+          resizeMode="cover"
+        />
+      );
+    }
+    case 'planet': {
+      const image = planets[visual.name];
+      return (
+        <Image
+          source={image}
+          style={[styles.illustrationImage, { width: size, height: size }]}
+          resizeMode="cover"
+        />
       );
     }
     case 'group':
@@ -213,9 +231,18 @@ function Group({ visual, size }: { visual: GroupVisual; size: number }) {
   return (
     <View style={[styles.group, { gap }]}>
       {rowCounts.map((itemsInRow, rowIndex) => (
-        <View key={rowIndex} style={[styles.groupRow, { gap }]}>
+        <View key={rowIndex} style={[styles.groupRow, { gap }]}> 
           {Array.from({ length: itemsInRow }, (_, itemIndex) => (
-            <Shape key={itemIndex} visual={visual.item} size={itemSize} />
+            <Shape
+              key={itemIndex}
+              visual={
+                visual.items?.[
+                  rowCounts.slice(0, rowIndex).reduce((sum, value) => sum + value, 0) +
+                    itemIndex
+                ] ?? visual.item
+              }
+              size={itemSize}
+            />
           ))}
         </View>
       ))}
@@ -232,6 +259,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     // A final short row sits centred under the full ones above it.
     justifyContent: 'center',
+  },
+  illustrationImage: {
+    borderRadius: radius.md,
   },
   named: {
     flexDirection: 'row',

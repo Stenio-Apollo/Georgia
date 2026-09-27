@@ -45,10 +45,10 @@ function countOf(visual: Visual): number {
 }
 
 describe('the content registry', () => {
-  it('has nineteen lessons: six colours, ten numbers and three animals', () => {
+  it('has thirty-seven lessons across four subjects', () => {
     // A blunt count, so accidentally deleting a lesson is visible immediately
     // rather than showing up as a slightly shorter picker nobody notices.
-    expect(allLessons).toHaveLength(19);
+    expect(allLessons).toHaveLength(37);
     expect(
       allLessons.filter(entry => entry.subjectId === 'colors'),
     ).toHaveLength(6);
@@ -57,7 +57,10 @@ describe('the content registry', () => {
     ).toHaveLength(10);
     expect(
       allLessons.filter(entry => entry.subjectId === 'animals'),
-    ).toHaveLength(3);
+    ).toHaveLength(10);
+    expect(
+      allLessons.filter(entry => entry.subjectId === 'planets'),
+    ).toHaveLength(11);
   });
 
   it('gives every lesson a unique id', () => {
@@ -297,8 +300,9 @@ describe('the animal lessons', () => {
     // argument in `cues.ts` and easy to forget on a fourth animal.
     for (const lesson of animalLessons) {
       const spoken = lesson.concept.id;
+      const article = /^[aeiou]/i.test(spoken) ? 'an' : 'a';
       expect(audioCues[`animal.${spoken}.this-is` as AudioCueId].text).toBe(
-        `This is a ${spoken}.`,
+        `This is ${article} ${spoken}.`,
       );
       expect(audioCues[`animal.${spoken}.find-prompt` as AudioCueId].text).toBe(
         `Can you find the ${spoken}?`,
@@ -325,7 +329,7 @@ describe('the animal lessons', () => {
   });
 });
 
-describe.each(['colors', 'numbers', 'animals'])('the %s subject', subjectId => {
+describe.each(['colors', 'numbers', 'animals', 'planets'])('the %s subject', subjectId => {
   it('does not always put the answer in the same place', () => {
     // If it did, "it's the middle one" is the pattern a child learns instead of
     // the colour or the amount — and they would be right to learn it, which is

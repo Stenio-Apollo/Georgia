@@ -47,6 +47,8 @@ export function LessonScreen({
 }: LessonScreenProps) {
   const engine = useLessonEngine(lesson);
   const { width } = useWindowDimensions();
+  const isLargeImageLesson =
+    lesson.concept.subject === 'animals' || lesson.concept.subject === 'planets';
 
   /**
    * How big each answer option is, which depends on how they are arranged.
@@ -70,10 +72,11 @@ export function LessonScreen({
    * room the dots cannot also have.
    */
   const rowTrayWidth = Math.min(
-    touchTarget.comfortable,
+    isLargeImageLesson ? 240 : touchTarget.comfortable,
     (width - spacing.lg * 2 - spacing.md * 2) / 3,
   );
   const rowOptionSize = rowTrayWidth - spacing.sm * 2;
+  const animalVisualSize = Math.min(320, width - spacing.lg * 2);
   const columnTrayWidth = Math.min(360, width - spacing.lg * 2);
   const columnOptionSize = columnTrayWidth - spacing.md * 2 - NAME_GUTTER;
 
@@ -111,6 +114,7 @@ export function LessonScreen({
             <LearningObject
               visual={lesson.concept.visual}
               accessibilityLabel={lesson.concept.name}
+              size={isLargeImageLesson ? animalVisualSize : undefined}
             />
             {conceptName}
           </View>
@@ -137,6 +141,7 @@ export function LessonScreen({
             <LearningObject
               visual={lesson.concept.visual}
               accessibilityLabel={lesson.concept.name}
+              size={isLargeImageLesson ? animalVisualSize : undefined}
               state={state}
               disabled={!engine.canInteract}
               onPress={() => engine.selectChoice(lesson.concept.id)}
@@ -187,7 +192,9 @@ export function LessonScreen({
             <LearningObject
               visual={lesson.concept.visual}
               accessibilityLabel={lesson.concept.name}
-              size={touchTarget.comfortable}
+              size={
+                isLargeImageLesson ? animalVisualSize : touchTarget.comfortable
+              }
             />
             {conceptName}
             {engine.state.phase === 'settled' ? (

@@ -1,6 +1,6 @@
 import type { AudioCueId, ConceptSlot } from '../audio/cues';
 import type { AnswerChoice, Lesson, Subject, Visual } from '../lesson/types';
-import { countingObject } from '../theme/colors';
+import { subjectAccent } from '../theme/colors';
 
 /**
  * Number lessons, one to ten.
@@ -28,9 +28,9 @@ import { countingObject } from '../theme/colors';
  * lesson, and the spoken prompt ("can you find seven?") teaches the word at
  * the same time.
  *
- * Every dot is the same warm brown, taken from `ui` rather than `learning`. In
- * a counting lesson the colour is not the lesson, so it must not compete — see
- * the note on `countingObject` in `src/theme/colors.ts`.
+ * Dots cycle through the three Home subject accents: Colors, Numbers, then
+ * Animals. The repeating sequence makes each quantity lively without changing
+ * what is being counted.
  */
 
 /** Index 0 is "one". Used for cue ids and for spoken labels. */
@@ -64,11 +64,21 @@ function displayWord(word: NumberWord): string {
   return word.charAt(0).toUpperCase() + word.slice(1);
 }
 
-/** A quantity: `count` identical dots, laid out five to a row. */
+const DOT_COLORS = [
+  subjectAccent.colors,
+  subjectAccent.numbers,
+  subjectAccent.animals,
+] as const;
+
+/** A quantity: `count` repeating-color dots, laid out five to a row. */
 function dots(count: number): Visual {
   return {
     kind: 'group',
-    item: { kind: 'circle', color: countingObject },
+    item: { kind: 'circle', color: DOT_COLORS[0] },
+    items: Array.from({ length: count }, (_, index): Visual => ({
+      kind: 'circle',
+      color: DOT_COLORS[index % DOT_COLORS.length],
+    })),
     count,
   };
 }

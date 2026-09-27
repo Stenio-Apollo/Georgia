@@ -1,4 +1,5 @@
 import React from 'react';
+import type { ImageSourcePropType } from 'react-native';
 import { Circle, Ellipse, G, Path } from 'react-native-svg';
 import type { IllustrationName } from '../../lesson/types';
 import { animal } from '../../theme';
@@ -211,9 +212,15 @@ function Bird() {
  * `animalLessonFlow.test.tsx` that checks the three actually render
  * differently.
  */
-export const illustrations: Record<IllustrationName, () => React.ReactElement> =
-  {
-    dog: Dog,
-    cat: Cat,
-    bird: Bird,
-  };
+export const illustrations: Record<IllustrationName, ImageSourcePropType> = {
+  dog: require('../../assets/images/dog.jpeg'),
+  bear: require('../../assets/images/bear.png'),
+  bird: require('../../assets/images/bird.jpeg'),
+  elephant: require('../../assets/images/elephant.jpeg'),
+  fish: require('../../assets/images/fish.jpeg'),
+  giraffe: require('../../assets/images/giraffe.jpeg'),
+  lion: require('../../assets/images/lion.jpeg'),
+  monkey: require('../../assets/images/monkey1.jpeg'),
+  mouse: require('../../assets/images/mouse.jpeg'),
+  tiger: require('../../assets/images/tiger.jpeg'),
+};

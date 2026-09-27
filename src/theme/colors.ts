@@ -107,6 +107,7 @@ export const subjectAccent = {
   colors: ui.terracotta,
   numbers: ui.mutedBlue,
   animals: ui.softGreen,
+  planets: ui.warmYellow,
 } as const;
 
 export const colors = { ui, learning, subjectAccent, animal };

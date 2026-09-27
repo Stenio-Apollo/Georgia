@@ -81,14 +81,18 @@ const PLAIN_TEMPLATES: CueTemplates = {
  * sound like a parent reading rather than a machine filling in a blank.
  */
 const ANIMAL_TEMPLATES: CueTemplates = {
-  'this-is': spoken => `This is a ${spoken}.`,
+  'this-is': spoken => `This is ${animalArticle(spoken)} ${spoken}.`,
   name: spoken => `${capitalise(spoken)}.`,
   'touch-prompt': spoken => `Can you touch the ${spoken}?`,
-  'touch-success': spoken => `Yes. A ${spoken}.`,
+  'touch-success': spoken => `Yes. ${capitalise(animalArticle(spoken))} ${spoken}.`,
   'find-prompt': spoken => `Can you find the ${spoken}?`,
   'find-success': spoken => `Yes. That's the ${spoken}.`,
   complete: spoken => `You found the ${spoken}.`,
 };
+
+function animalArticle(animal: string): 'a' | 'an' {
+  return /^[aeiou]/i.test(animal) ? 'an' : 'a';
+}
 
 // Both sets are a `Record<ConceptSlot, ...>`, so they always have the same
 // seven keys and either can define the list.
@@ -202,13 +206,42 @@ export const audioCues = {
   ...conceptCues('number.ten', { spoken: 'ten' }),
 
   // ---- Animals -----------------------------------------------------------
-  // The only concepts with their own wording so far. See ANIMAL_TEMPLATES.
+  // Animal concepts share article-aware wording. See ANIMAL_TEMPLATES.
   ...conceptCues('animal.dog', { spoken: 'dog', templates: ANIMAL_TEMPLATES }),
-  ...conceptCues('animal.cat', { spoken: 'cat', templates: ANIMAL_TEMPLATES }),
+  ...conceptCues('animal.bear', { spoken: 'bear', templates: ANIMAL_TEMPLATES }),
   ...conceptCues('animal.bird', {
     spoken: 'bird',
     templates: ANIMAL_TEMPLATES,
   }),
+  ...conceptCues('animal.elephant', {
+    spoken: 'elephant',
+    templates: ANIMAL_TEMPLATES,
+  }),
+  ...conceptCues('animal.fish', { spoken: 'fish', templates: ANIMAL_TEMPLATES }),
+  ...conceptCues('animal.giraffe', {
+    spoken: 'giraffe',
+    templates: ANIMAL_TEMPLATES,
+  }),
+  ...conceptCues('animal.lion', { spoken: 'lion', templates: ANIMAL_TEMPLATES }),
+  ...conceptCues('animal.monkey', {
+    spoken: 'monkey',
+    templates: ANIMAL_TEMPLATES,
+  }),
+  ...conceptCues('animal.mouse', { spoken: 'mouse', templates: ANIMAL_TEMPLATES }),
+  ...conceptCues('animal.tiger', { spoken: 'tiger', templates: ANIMAL_TEMPLATES }),
+
+  // ---- Planets -----------------------------------------------------------
+  ...conceptCues('planet.mercury', { spoken: 'Mercury' }),
+  ...conceptCues('planet.venus', { spoken: 'Venus' }),
+  ...conceptCues('planet.earth', { spoken: 'Earth' }),
+  ...conceptCues('planet.moon', { spoken: 'the Moon' }),
+  ...conceptCues('planet.mars', { spoken: 'Mars' }),
+  ...conceptCues('planet.jupiter', { spoken: 'Jupiter' }),
+  ...conceptCues('planet.saturn', { spoken: 'Saturn' }),
+  ...conceptCues('planet.uranus', { spoken: 'Uranus' }),
+  ...conceptCues('planet.neptune', { spoken: 'Neptune' }),
+  ...conceptCues('planet.pluto', { spoken: 'Pluto' }),
+  ...conceptCues('planet.sun', { spoken: 'the Sun' }),
 
   // ---- Shared, reusable across every lesson ------------------------------
   'shared.try-again': {
