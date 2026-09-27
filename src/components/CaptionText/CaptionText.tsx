@@ -36,12 +36,15 @@ export function CaptionText({ text }: CaptionTextProps) {
 const styles = StyleSheet.create({
   container: {
     // Room for two lines, reserved permanently.
-    minHeight: fontSize.body * 1.45 * 2,
+    minHeight: (fontSize.body + 7) * 1.45 * 2,
     justifyContent: 'center',
     paddingHorizontal: spacing.md,
+    transform: [{ translateY: -7 }],
   },
   text: {
     ...textStyles.body,
+    fontSize: fontSize.body + 7,
+    lineHeight: (fontSize.body + 7) * 1.45,
     color: ui.inkSoft,
     textAlign: 'center',
   },

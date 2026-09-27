@@ -1,6 +1,6 @@
 import React from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
-import { spacing, textStyles, ui } from '../../theme';
+import { cardSurface, radius, spacing, textStyles, ui } from '../../theme';
 import { ProgressIndicator } from '../ProgressIndicator/ProgressIndicator';
 
 interface LessonHeaderProps {
@@ -47,8 +47,12 @@ const styles = StyleSheet.create({
   closeButton: {
     minWidth: 44,
     minHeight: 44,
-    alignItems: 'flex-end',
+    paddingHorizontal: spacing.md + 1.5,
+    alignItems: 'center',
     justifyContent: 'center',
+    borderRadius: radius.full,
+    transform: [{ translateY: 7 }],
+    ...cardSurface,
   },
   closeLabel: {
     ...textStyles.caption,

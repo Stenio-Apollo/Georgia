@@ -212,10 +212,14 @@ const styles = StyleSheet.create({
     marginLeft: 285,
   },
   parentLink: {
-    minHeight: 44,
+    alignSelf: 'center',
+    minHeight: 50,
+    paddingHorizontal: spacing.md,
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: spacing.md,
+    borderRadius: radius.full,
+    transform: [{ translateY: -11 }],
+    ...cardSurface,
   },
   parentLinkLabel: {
     ...textStyles.caption,

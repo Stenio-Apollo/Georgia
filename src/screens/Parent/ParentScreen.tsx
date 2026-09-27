@@ -58,7 +58,7 @@ export function ParentScreen({ onBack }: ParentScreenProps) {
       </ScrollView>
 
       <View style={styles.footer}>
-        <SoftButton label="Back" variant="quiet" onPress={onBack} />
+        <SoftButton label="Back" onPress={onBack} />
       </View>
     </Screen>
   );

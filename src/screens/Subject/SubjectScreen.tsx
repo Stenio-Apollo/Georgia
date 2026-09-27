@@ -1,5 +1,6 @@
 import React from 'react';
 import {
+  Image,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -12,7 +13,10 @@ import { LessonTile } from '../../components/LessonTile/LessonTile';
 import { Screen } from '../../components/Screen/Screen';
 import { getLessonsForSubject, getSubject } from '../../content';
 import type { SubjectId } from '../../lesson/types';
-import { spacing, textStyles, ui } from '../../theme';
+import { cardSurface, radius, spacing, textStyles, ui } from '../../theme';
+
+const idleAnimation = require('../../assets/images/Idle.gif');
+const colorsTitleImage = require('../../assets/images/colors.png');
 
 interface SubjectScreenProps {
   subjectId: SubjectId;
@@ -73,15 +77,31 @@ export function SubjectScreen({
   );
 
   return (
-    <Screen>
+    <Screen style={subjectId === 'colors' ? styles.colorsScreen : undefined}>
       {/* The same quiet, adult-sized back control as a lesson's "Done". A
           child pressing around the screen should land in a lesson, not back
           out to the home screen. */}
-      <View style={styles.header}>
-        <Text style={styles.title}>{subject?.title ?? ''}</Text>
+      <View
+        style={[
+          styles.header,
+          subjectId !== 'animals' && styles.centeredHeader,
+        ]}>
+        {subjectId === 'colors' ? (
+          <Image
+            source={colorsTitleImage}
+            style={styles.colorsTitleImage}
+            resizeMode="contain"
+            accessible={false}
+          />
+        ) : (
+          <Text style={styles.title}>{subject?.title ?? ''}</Text>
+        )}
         <Pressable
           onPress={onBack}
-          style={styles.backButton}
+          style={[
+            styles.backButton,
+            subjectId !== 'animals' && styles.centeredBackButton,
+          ]}
           hitSlop={8}
           accessibilityRole="button"
           accessibilityLabel="Back to home">
@@ -106,37 +126,81 @@ export function SubjectScreen({
             />
           </View>
         ))}
+        {(
+          subjectId === 'colors' ||
+          subjectId === 'numbers' ||
+          subjectId === 'animals'
+        ) && (
+          <View style={styles.idleCard}>
+            <Image
+              source={idleAnimation}
+              style={styles.idleImage}
+              resizeMode="contain"
+              accessible={false}
+            />
+          </View>
+        )}
       </ScrollView>
     </Screen>
   );
 }
 
 const styles = StyleSheet.create({
+  colorsScreen: {
+    paddingTop: 11,
+  },
   header: {
+    position: 'relative',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingVertical: spacing.md,
     paddingBottom: spacing.lg,
   },
+  centeredHeader: {
+    justifyContent: 'center',
+  },
   title: {
     ...textStyles.title,
     color: ui.ink,
   },
+  colorsTitleImage: {
+    width: 190,
+    height: 84,
+  },
   backButton: {
     minWidth: 44,
     minHeight: 44,
-    alignItems: 'flex-end',
+    paddingHorizontal: spacing.md,
+    alignItems: 'center',
     justifyContent: 'center',
+    borderRadius: radius.full,
+    ...cardSurface,
   },
   backLabel: {
     ...textStyles.caption,
     color: ui.inkSoft,
+  },
+  centeredBackButton: {
+    position: 'absolute',
+    top: spacing.md,
+    right: 0,
   },
   grid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     gap: spacing.md,
     paddingBottom: spacing.xl,
+  },
+  idleCard: {
+    width: '100%',
+    alignItems: 'center',
+    padding: spacing.lg,
+    borderRadius: radius.lg,
+    ...cardSurface,
+  },
+  idleImage: {
+    width: '100%',
+    height: 300,
   },
 });
