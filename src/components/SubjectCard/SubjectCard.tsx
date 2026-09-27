@@ -21,6 +21,10 @@ interface SubjectCardProps {
   isAvailable: boolean;
   /** Stagger the entrance slightly so cards do not all arrive at once. */
   entranceDelayMs?: number;
+  /** A denser card for the vertically stacked phone home screen. */
+  compact?: boolean;
+  /** A more legible eyebrow label for the tablet home layout. */
+  largeDescription?: boolean;
   onPress: () => void;
 }
 
@@ -42,6 +46,8 @@ export function SubjectCard({
   accentColor,
   isAvailable,
   entranceDelayMs = 0,
+  compact = false,
+  largeDescription = false,
   onPress,
 }: SubjectCardProps) {
   const entranceStyle = useGentleEntrance(entranceDelayMs);
@@ -65,6 +71,7 @@ export function SubjectCard({
         <Animated.View
           style={[
             styles.card,
+            compact && styles.compactCard,
             press.style,
             !isAvailable && styles.cardUnavailable,
           ]}>
@@ -72,7 +79,11 @@ export function SubjectCard({
           <View style={[styles.accent, { backgroundColor: accentColor }]} />
           <View style={styles.textBlock}>
             <Text style={styles.title}>{title}</Text>
-            <Text style={styles.description}>
+            <Text
+              style={[
+                styles.description,
+                largeDescription && styles.largeDescription,
+              ]}>
               {isAvailable ? description : 'Soon'}
             </Text>
           </View>
@@ -99,6 +110,12 @@ const styles = StyleSheet.create({
     shadowOpacity: 0,
     elevation: 0,
   },
+  compactCard: {
+    minHeight: 80,
+    paddingVertical: spacing.sm + 2,
+    paddingHorizontal: spacing.md,
+    gap: spacing.md,
+  },
   accent: {
     width: 10,
     height: 56,
@@ -113,7 +130,14 @@ const styles = StyleSheet.create({
     color: ui.ink,
   },
   description: {
-    ...textStyles.caption,
+    fontSize: 10,
+    fontWeight: '500',
+    letterSpacing: 1.8,
+    textTransform: 'uppercase',
     color: ui.inkSoft,
+  },
+  largeDescription: {
+    fontSize: 13,
+    letterSpacing: 2.2,
   },
 });

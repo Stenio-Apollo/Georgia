@@ -1,5 +1,11 @@
 import React, { useEffect, useRef } from 'react';
-import { StyleSheet, Text, View, useWindowDimensions } from 'react-native';
+import {
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+  useWindowDimensions,
+} from 'react-native';
 import { AnswerOption } from '../../components/AnswerOption/AnswerOption';
 import { CaptionText } from '../../components/CaptionText/CaptionText';
 import {
@@ -47,6 +53,7 @@ export function LessonScreen({
 }: LessonScreenProps) {
   const engine = useLessonEngine(lesson);
   const { width } = useWindowDimensions();
+  const isPhone = width < 600;
   const isLargeImageLesson =
     lesson.concept.subject === 'animals' || lesson.concept.subject === 'planets';
 
@@ -155,7 +162,15 @@ export function LessonScreen({
       case 'question': {
         // The lesson data says how to arrange them; this screen does not guess
         // from the visuals. See `choiceLayout` in `src/lesson/types.ts`.
-        const isColumn = step.question.choiceLayout === 'column';
+        const isColumn =
+          step.question.choiceLayout === 'column' ||
+          (isPhone && isLargeImageLesson);
+        const optionSize =
+          isColumn && isPhone && isLargeImageLesson
+            ? Math.min(164, width - spacing.lg * 2 - spacing.md * 2)
+            : isColumn
+            ? columnOptionSize
+            : rowOptionSize;
 
         return (
           <View style={isColumn ? styles.optionColumn : styles.optionRow}>
@@ -163,7 +178,7 @@ export function LessonScreen({
               <AnswerOption
                 key={choice.id}
                 choice={choice}
-                size={isColumn ? columnOptionSize : rowOptionSize}
+                size={optionSize}
                 // Every choice gets a tray; only its width and padding differ
                 // by layout. See `optionTray` below.
                 style={
@@ -210,9 +225,18 @@ export function LessonScreen({
       <LessonHeader progress={engine.progress} onClose={onExit} />
 
       {/* The stage: one learning objective, centred, with room around it. */}
-      <View style={styles.stage}>
-        {engine.step ? renderStep(engine.step) : null}
-      </View>
+      {isPhone ? (
+        <ScrollView
+          style={styles.phoneStageScroll}
+          contentContainerStyle={styles.phoneStageContent}
+          showsVerticalScrollIndicator={false}>
+          <View style={[styles.stage, styles.phoneStage]}>
+            {engine.step ? renderStep(engine.step) : null}
+          </View>
+        </ScrollView>
+      ) : (
+        <View style={styles.stage}>{engine.step ? renderStep(engine.step) : null}</View>
+      )}
 
       {/* What was just said, for the adult in the room. */}
       <CaptionText text={engine.caption} />
@@ -225,6 +249,17 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  phoneStage: {
+    flex: undefined,
+    minHeight: 380,
+    paddingVertical: spacing.xl,
+  },
+  phoneStageScroll: {
+    flex: 1,
+  },
+  phoneStageContent: {
+    flexGrow: 1,
   },
   /**
    * The vertical rhythm of a step: object, name, and on the last step a button.

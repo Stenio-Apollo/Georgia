@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, useWindowDimensions, View } from 'react-native';
 import { LearningObject } from '../../components/LearningObject/LearningObject';
 import { Screen } from '../../components/Screen/Screen';
 import { SoftButton } from '../../components/SoftButton/SoftButton';
@@ -36,13 +36,16 @@ export function ResultsScreen({
   onNext,
   onHome,
 }: ResultsScreenProps) {
+  const { width, height } = useWindowDimensions();
+  const isTablet = Math.min(width, height) >= 600;
+
   return (
     <Screen>
       <View style={styles.body}>
         <LearningObject
           visual={lesson.concept.visual}
           accessibilityLabel={lesson.concept.name}
-          size={touchTarget.comfortable}
+          size={isTablet ? 260 : touchTarget.comfortable}
         />
         {/* "We looked at red." / "We looked at 3." / "We looked at the dog."
             The content supplies the last one — see `inSentence` in

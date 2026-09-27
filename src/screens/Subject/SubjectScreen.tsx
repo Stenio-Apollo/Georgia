@@ -50,8 +50,17 @@ export function SubjectScreen({
   const subject = getSubject(subjectId);
   const lessons = getLessonsForSubject(subjectId);
   const { width } = useWindowDimensions();
+  const isTablet = width >= 600;
   const usesFrostedScrollHeader =
-    subjectId === 'animals' || subjectId === 'planets';
+    subjectId === 'animals' ||
+    subjectId === 'colors' ||
+    subjectId === 'numbers' ||
+    subjectId === 'planets';
+  const usesPlanetsLayout =
+    subjectId === 'colors' || subjectId === 'numbers' || subjectId === 'planets';
+  // Every module shares the Planet picker rhythm on phones. Tablet-specific
+  // placement remains unchanged.
+  const usesPlanetsMobileSpacing = !isTablet && usesFrostedScrollHeader;
 
   /*
    * How big the drawing inside each tile should be.
@@ -83,7 +92,7 @@ export function SubjectScreen({
   ) + (subjectId === 'animals' || subjectId === 'planets' ? spacing.xs * 2 : 0);
 
   return (
-    <Screen style={subjectId === 'colors' ? styles.colorsScreen : undefined}>
+    <Screen>
       {/* The same quiet, adult-sized back control as a lesson's "Done". A
           child pressing around the screen should land in a lesson, not back
           out to the home screen. */}
@@ -92,6 +101,7 @@ export function SubjectScreen({
           styles.header,
           styles.centeredHeader,
           usesFrostedScrollHeader && styles.frostedScrollHeader,
+          usesPlanetsMobileSpacing && styles.planetsFrostedScrollHeader,
         ]}>
         {subjectId === 'colors' ? (
           <Image
@@ -107,34 +117,57 @@ export function SubjectScreen({
             resizeMode="contain"
             accessible={false}
           />
-        ) : subjectId === 'planets' ? (
+        ) : subjectId === 'planets' || subjectId === 'numbers' ? (
           <View style={styles.planetHeading}>
             <View style={styles.planetHeadingRule} />
-            <Text style={styles.planetHeadingLabel}>02 — PLANETS</Text>
+            <Text style={styles.planetHeadingLabel}>
+              {subjectId === 'planets' ? '02 — PLANETS' : '01 — NUMBERS'}
+            </Text>
           </View>
         ) : (
           <Text style={styles.title}>{subject?.title ?? ''}</Text>
         )}
+        {(!usesFrostedScrollHeader || isTablet) && (
+          <Pressable
+            onPress={onBack}
+            style={[
+              styles.backButton,
+              styles.centeredBackButton,
+              usesFrostedScrollHeader && styles.tabletFrostedBackButton,
+            ]}
+            hitSlop={8}
+            accessibilityRole="button"
+            accessibilityLabel="Back to home">
+            <Text style={styles.backLabel}>Home</Text>
+          </Pressable>
+        )}
+      </View>
+
+      {usesFrostedScrollHeader && !isTablet && (
         <Pressable
           onPress={onBack}
           style={[
             styles.backButton,
-            styles.centeredBackButton,
-            (subjectId === 'animals' || subjectId === 'planets') &&
-              styles.animalBackButton,
+            styles.frostedBackButton,
+            usesPlanetsMobileSpacing && styles.planetsFrostedBackButton,
+            subjectId === 'colors' && styles.colorsFrostedBackButton,
           ]}
           hitSlop={8}
           accessibilityRole="button"
           accessibilityLabel="Back to home">
           <Text style={styles.backLabel}>Home</Text>
         </Pressable>
-      </View>
+      )}
 
       <ScrollView
         style={usesFrostedScrollHeader ? styles.scrollWithFrostedHeader : undefined}
         contentContainerStyle={[
           styles.grid,
           usesFrostedScrollHeader && styles.gridWithFrostedHeader,
+          usesPlanetsMobileSpacing && styles.planetsGridWithFrostedHeader,
+          !isTablet &&
+            subjectId === 'colors' &&
+            styles.colorsGridWithFrostedHeader,
         ]}
         showsVerticalScrollIndicator={false}>
         {lessons.map((lesson, index) => (
@@ -167,9 +200,6 @@ export function SubjectScreen({
 }
 
 const styles = StyleSheet.create({
-  colorsScreen: {
-    paddingTop: 11,
-  },
   header: {
     position: 'relative',
     flexDirection: 'row',
@@ -183,7 +213,7 @@ const styles = StyleSheet.create({
   },
   frostedScrollHeader: {
     position: 'absolute',
-    top: spacing.sm + 14,
+    top: spacing.xl,
     left: spacing.lg,
     right: spacing.lg,
     zIndex: 2,
@@ -191,6 +221,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.lg,
     borderRadius: radius.lg,
     ...cardSurface,
+  },
+  planetsFrostedScrollHeader: {
+    top: spacing.xl + 21,
   },
   title: {
     ...textStyles.title,
@@ -238,9 +271,21 @@ const styles = StyleSheet.create({
     top: spacing.md,
     right: 0,
   },
-  animalBackButton: {
+  tabletFrostedBackButton: {
     top: spacing.md + 11,
     right: 44,
+  },
+  frostedBackButton: {
+    position: 'absolute',
+    top: spacing.xl + 70 + spacing.md + spacing.lg + spacing.sm,
+    alignSelf: 'center',
+    zIndex: 2,
+  },
+  planetsFrostedBackButton: {
+    top: spacing.xl + 70 + spacing.md + spacing.lg + spacing.sm + 21,
+  },
+  colorsFrostedBackButton: {
+    top: spacing.xl + 70 + spacing.md + spacing.lg + spacing.sm + 35,
   },
   grid: {
     flexDirection: 'row',
@@ -252,7 +297,13 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   gridWithFrostedHeader: {
-    paddingTop: 126,
+    paddingTop: 150,
+  },
+  planetsGridWithFrostedHeader: {
+    paddingTop: 170,
+  },
+  colorsGridWithFrostedHeader: {
+    paddingTop: 184,
   },
   idleCard: {
     width: '100%',
