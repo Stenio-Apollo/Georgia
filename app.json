@@ -1,4 +1,28 @@
 {
-  "name": "untitled1",
-  "displayName": "Petits Pas"
+  "expo": {
+    "name": "Petits Pas",
+    "slug": "petits-pas",
+    "version": "1.0.0",
+    "orientation": "default",
+    "ios": {
+      "bundleIdentifier": "com.steniogerlin.petitspas",
+      "supportsTablet": true
+    },
+    "runtimeVersion": "1.0.0",
+    "updates": {
+      "fallbackToCacheTimeout": 0,
+      "url": "https://u.expo.dev/b1c3de26-8085-41e4-a5bd-d67d9a40982a"
+    },
+    "plugins": [
+      "expo-notifications",
+      "expo-secure-store"
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "b1c3de26-8085-41e4-a5bd-d67d9a40982a"
+      }
+    },
+    "owner": "stenio2k9",
+    "android": {}
+  }
 }

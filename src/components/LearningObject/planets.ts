@@ -3,7 +3,7 @@ import type { PlanetName } from '../../lesson/types';
 
 export const planets: Record<PlanetName, ImageSourcePropType> = {
   mercury: require('../../assets/images/Mercury.jpeg'),
-  venus: require('../../assets/images/venus pantone - Simon Lee.jpeg'),
+  venus: require('../../assets/images/Venus.jpeg'),
   earth: require('../../assets/images/earth.jpeg'),
   moon: require('../../assets/images/Moon.jpeg'),
   mars: require('../../assets/images/Marte.jpeg'),

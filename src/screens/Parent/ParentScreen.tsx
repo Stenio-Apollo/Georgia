@@ -1,8 +1,14 @@
 import React from 'react';
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import {
+  ScrollView,
+  StyleSheet,
+  Text,
+  useWindowDimensions,
+  View,
+} from 'react-native';
 import { Screen } from '../../components/Screen/Screen';
 import { SoftButton } from '../../components/SoftButton/SoftButton';
-import { radius, spacing, textStyles, ui } from '../../theme';
+import { cardSurface, radius, spacing, textStyles, ui } from '../../theme';
 
 interface ParentScreenProps {
   onBack: () => void;
@@ -25,19 +31,38 @@ interface ParentScreenProps {
  * room, so a parent knows at a glance which side of the app they are on.
  */
 export function ParentScreen({ onBack }: ParentScreenProps) {
+  const { width } = useWindowDimensions();
+  const isTablet = width >= 600;
+
   return (
     <Screen>
-      <ScrollView contentContainerStyle={styles.content}>
-        <Text style={styles.heading}>For parents</Text>
+      <View style={[styles.header, isTablet && styles.tabletHeader]}>
+        <Eyebrow label="FOR PARENTS" variant="header" />
+      </View>
 
-        <Text style={styles.intro}>
-          This app is built to be used alongside your child, not instead of you.
-          It teaches one idea at a time, waits as long as your child needs, and
-          never rewards speed. The words it speaks appear on screen so you can
-          repeat them, or carry the idea off the screen and into the room.
-        </Text>
+      <ScrollView
+        contentContainerStyle={[
+          styles.content,
+          isTablet ? styles.tabletContent : styles.mobileContent,
+        ]}
+        showsVerticalScrollIndicator={false}>
+        <View style={styles.introCard}>
+          <Eyebrow label="A GENTLE GUIDE" />
+          <Text style={styles.intro}>
+            This app is built to be used alongside your child, not instead of you.
+            It teaches one idea at a time, waits as long as your child needs, and
+            never rewards speed. It was built to be very low stimulant, focusing on
+            the core concepts rather than bright colors and overstimulating sound effects.
+            you will be able to record your voice going through the modules while following
+            the provided captions. This is for those longer days when time can't be allocated.
+            this was wasn't designed to replace physical toys and books, but to provide a more
+            convenient alternative when toys and books arent suited for the environment.
+            You are their greatest teacher always remember that.
+          </Text>
+        </View>
 
         <View style={styles.sections}>
+          <Eyebrow label="LEARNING OVERVIEW" />
           <PlaceholderSection
             title="Concepts introduced"
             description="Which ideas your child has seen for the first time."
@@ -69,6 +94,22 @@ interface PlaceholderSectionProps {
   description: string;
 }
 
+interface EyebrowProps {
+  label: string;
+  variant?: 'header';
+}
+
+function Eyebrow({ label, variant }: EyebrowProps) {
+  return (
+    <View style={styles.eyebrow}>
+      <View style={[styles.eyebrowRule, variant === 'header' && styles.headerRule]} />
+      <Text style={[styles.eyebrowLabel, variant === 'header' && styles.headerLabel]}>
+        {label}
+      </Text>
+    </View>
+  );
+}
+
 function PlaceholderSection({ title, description }: PlaceholderSectionProps) {
   return (
     <View style={styles.section}>
@@ -80,27 +121,77 @@ function PlaceholderSection({ title, description }: PlaceholderSectionProps) {
 }
 
 const styles = StyleSheet.create({
+  header: {
+    position: 'absolute',
+    top: spacing.xl + 21,
+    left: spacing.lg,
+    right: spacing.lg,
+    zIndex: 2,
+    minHeight: 70 + spacing.md + spacing.lg,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: spacing.lg,
+    borderRadius: radius.lg,
+    ...cardSurface,
+  },
+  tabletHeader: {
+    top: spacing.xl,
+  },
   content: {
-    paddingTop: spacing.xl,
-    paddingBottom: spacing.xl,
+    width: '100%',
+    alignSelf: 'center',
+    paddingBottom: spacing.xxxl,
     gap: spacing.xl,
   },
-  heading: {
-    ...textStyles.title,
-    color: ui.ink,
+  mobileContent: {
+    paddingTop: 170,
+  },
+  tabletContent: {
+    maxWidth: 720,
+    paddingTop: 150,
+  },
+  eyebrow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.md,
+  },
+  eyebrowRule: {
+    width: 44,
+    height: 1,
+    backgroundColor: ui.warmBrown,
+  },
+  headerRule: {
+    width: 80,
+  },
+  eyebrowLabel: {
+    fontSize: 14,
+    fontWeight: '500',
+    letterSpacing: 3,
+    color: ui.warmBrown,
+  },
+  headerLabel: {
+    fontSize: 20,
+    letterSpacing: 5,
   },
   intro: {
     ...textStyles.caption,
     color: ui.inkSoft,
+    lineHeight: 26,
+  },
+  introCard: {
+    padding: spacing.lg,
+    borderRadius: radius.lg,
+    gap: spacing.md,
+    ...cardSurface,
   },
   sections: {
     gap: spacing.md,
   },
   section: {
     padding: spacing.lg,
-    backgroundColor: ui.surface,
-    borderRadius: radius.md,
+    borderRadius: radius.lg,
     gap: spacing.xs,
+    ...cardSurface,
   },
   sectionTitle: {
     ...textStyles.body,

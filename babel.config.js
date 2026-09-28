@@ -1,5 +1,5 @@
 module.exports = {
-  presets: ['module:@react-native/babel-preset'],
+  presets: ['babel-preset-expo'],
   plugins: [
     // Required by react-native-reanimated v4.
     // In Reanimated 4 the Babel plugin moved out of `react-native-reanimated`

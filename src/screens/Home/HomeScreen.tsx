@@ -22,6 +22,8 @@ import {
 } from '../../theme';
 
 const helloAnimation = require('../../assets/images/Hello.gif');
+const bunnyImage = require('../../assets/images/bunny-plane.png');
+const racoonImage = require('../../assets/images/racoon-cutout.png');
 const beeImage = require('../../assets/images/bee.png');
 const secondBeeImage = require('../../assets/images/bee-second.png');
 const house4Image = require('../../assets/images/house4.png');
@@ -66,7 +68,6 @@ export function HomeScreen({ onOpenSubject, onOpenParent }: HomeScreenProps) {
           source={snailImage}
           style={[styles.snail, styles.phoneSnail]}
           resizeMode="contain"
-          pointerEvents="none"
           accessible={false}
         />
       )}
@@ -164,8 +165,20 @@ export function HomeScreen({ onOpenSubject, onOpenParent }: HomeScreenProps) {
         {isTablet && (
           <View style={styles.greetingCard}>
             <Image
+              source={racoonImage}
+              style={styles.tabletGreetingRacoon}
+              resizeMode="contain"
+              accessible={false}
+            />
+            <Image
               source={helloAnimation}
               style={styles.greetingImage}
+              resizeMode="contain"
+              accessible={false}
+            />
+            <Image
+              source={bunnyImage}
+              style={styles.tabletGreetingBunny}
               resizeMode="contain"
               accessible={false}
             />
@@ -217,13 +230,6 @@ export function HomeScreen({ onOpenSubject, onOpenParent }: HomeScreenProps) {
 
   return isTablet ? (
     <Screen>
-      <Image
-        source={snailImage}
-        style={styles.snail}
-        resizeMode="contain"
-        pointerEvents="none"
-        accessible={false}
-      />
       {homeContent}
     </Screen>
   ) : (
@@ -296,6 +302,24 @@ const styles = StyleSheet.create({
   },
   phoneGreetingImage: {
     height: 190,
+  },
+  tabletGreetingBunny: {
+    position: 'absolute',
+    right: 0,
+    top: '50%',
+    width: 210,
+    height: 171,
+    marginTop: -86,
+    zIndex: 1,
+  },
+  tabletGreetingRacoon: {
+    position: 'absolute',
+    top: '50%',
+    left: spacing.xxl,
+    width: 170,
+    height: 189,
+    marginTop: -91,
+    zIndex: 1,
   },
   greetingInstruction: {
     position: 'absolute',
